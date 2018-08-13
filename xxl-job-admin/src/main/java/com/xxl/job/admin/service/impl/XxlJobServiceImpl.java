@@ -247,6 +247,28 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
+	public ReturnT<String> allPause(int group) {
+		try {
+			boolean ret = XxlJobDynamicScheduler.pauseGroupJob(String.valueOf(group));	// jobStatus do not store
+			return ret?ReturnT.SUCCESS:ReturnT.FAIL;
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return ReturnT.FAIL;
+		}
+	}
+
+	@Override
+	public ReturnT<String> allResume(int group) {
+		try {
+			boolean ret = XxlJobDynamicScheduler.resumeGroupJob(String.valueOf(group));	// jobStatus do not store
+			return ret?ReturnT.SUCCESS:ReturnT.FAIL;
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return ReturnT.FAIL;
+		}
+	}
+
+	@Override
 	public ReturnT<String> resume(int id) {
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
         String group = String.valueOf(xxlJobInfo.getJobGroup());

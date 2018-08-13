@@ -237,7 +237,65 @@ $(function() {
 			});
 		});
 	});
-	
+
+	function pauseOrResume(type) {
+        var typeName;
+        var url;
+        var needFresh = true;
+        var id = $("#jobGroup").val();
+        if (type=="allPause"){
+            url = base_url + "/jobinfo/allPause";
+            typeName="暂停";
+		}else if(type=="allResume"){
+            url = base_url + "/jobinfo/allResume";
+            typeName="恢复";
+		}else {
+			return;
+		}
+        layer.confirm('确认' + typeName + '?', {icon: 3, title:'系统提示'}, function(index){
+            layer.close(index);
+
+            $.ajax({
+                type : 'POST',
+                url : url,
+                data : {
+                    "id" : id
+                },
+                dataType : "json",
+                success : function(data){
+                    if (data.code == 200) {
+                        layer.open({
+                            title: '系统提示',
+                            content: typeName + "成功",
+                            icon: '1',
+                            end: function(layero, index){
+                                if (needFresh) {
+                                    jobTable.fnDraw();
+                                }
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            title: '系统提示',
+                            content: (data.msg || typeName + "失败"),
+                            icon: '2'
+                        });
+                    }
+                },
+            });
+        });
+    }
+
+    // job operate
+    $("#allPause").on('click', function() {
+        pauseOrResume("allPause");
+    });
+
+    // job operate
+    $("#allResume").on('click', function() {
+        pauseOrResume("allResume");
+    });
+
 	// jquery.validate 自定义校验 “英文字母开头，只含有英文字母、数字和下划线”
 	jQuery.validator.addMethod("myValid01", function(value, element) {
 		var length = value.length;

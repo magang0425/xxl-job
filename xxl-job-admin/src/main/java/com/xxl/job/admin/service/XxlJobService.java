@@ -22,7 +22,11 @@ public interface XxlJobService {
 	public ReturnT<String> remove(int id);
 	
 	public ReturnT<String> pause(int id);
-	
+
+    ReturnT<String> allPause(int group);
+
+	ReturnT<String> allResume(int group);
+
 	public ReturnT<String> resume(int id);
 	
 	public ReturnT<String> triggerJob(int id);

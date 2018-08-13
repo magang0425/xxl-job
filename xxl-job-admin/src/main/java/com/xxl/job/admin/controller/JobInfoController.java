@@ -81,6 +81,18 @@ public class JobInfoController {
 	public ReturnT<String> pause(int id) {
 		return xxlJobService.pause(id);
 	}
+
+	@RequestMapping("/allPause")
+	@ResponseBody
+	public ReturnT<String> allPause(int id) {
+		return xxlJobService.allPause(id);
+	}
+
+	@RequestMapping("/allResume")
+	@ResponseBody
+	public ReturnT<String> allResume(int id) {
+		return xxlJobService.allResume(id);
+	}
 	
 	@RequestMapping("/resume")
 	@ResponseBody

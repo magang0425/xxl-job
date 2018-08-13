@@ -14,6 +14,7 @@ import com.xxl.job.core.rpc.netcom.NetComClientProxy;
 import com.xxl.job.core.rpc.netcom.NetComServerFactory;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,7 +300,51 @@ public final class XxlJobDynamicScheduler implements ApplicationContextAware {
         }
         return result;
     }
-    
+
+    /**
+     * pause
+     *
+     * @param jobGroup
+     * @param jobGroup
+     * @return
+     * @throws SchedulerException
+     */
+    public static boolean pauseGroupJob(String jobGroup) throws SchedulerException {
+        // TriggerKey : name + group
+        GroupMatcher<TriggerKey> triggerKeyGroupMatcher=GroupMatcher.triggerGroupEquals(jobGroup);
+        boolean result = true;
+        try {
+            scheduler.pauseTriggers(triggerKeyGroupMatcher);
+        } catch (SchedulerException e) {
+            logger.error(">>>>>>>>>>> pauseJob error, error msg:{}", e);
+            result = false;
+        }
+        logger.info(">>>>>>>>>>> pauseJob success, jobGroup:{}", jobGroup);
+        return result;
+    }
+    /**
+     * pause
+     *
+     * @param jobGroup
+     * @param jobGroup
+     * @return
+     * @throws SchedulerException
+     */
+    public static boolean resumeGroupJob(String jobGroup) throws SchedulerException {
+        // TriggerKey : name + group
+        GroupMatcher<TriggerKey> triggerKeyGroupMatcher=GroupMatcher.triggerGroupEquals(jobGroup);
+        boolean result = true;
+        try {
+            scheduler.resumeTriggers(triggerKeyGroupMatcher);
+        } catch (SchedulerException e) {
+            logger.error(">>>>>>>>>>> pauseJob error, error msg:{}", e);
+            result = false;
+        }
+        logger.info(">>>>>>>>>>> pauseJob success, jobGroup:{}", jobGroup);
+        return result;
+    }
+
+
     /**
      * resume
      *
@@ -311,7 +356,7 @@ public final class XxlJobDynamicScheduler implements ApplicationContextAware {
     public static boolean resumeJob(String jobName, String jobGroup) throws SchedulerException {
     	// TriggerKey : name + group
     	TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
-        
+
         boolean result = false;
         if (checkExists(jobName, jobGroup)) {
             scheduler.resumeTrigger(triggerKey);
